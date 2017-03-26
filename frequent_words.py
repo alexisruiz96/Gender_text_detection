@@ -2,6 +2,7 @@ from os import listdir
 from os.path import isfile, join
 from collections import Counter
 import re
+import sys
 
 
 N = 10  # Default number of most frequent words
@@ -34,17 +35,24 @@ def mostFrequentWordsOfText(n, text):
     return word_counts.most_common(n)
 
 
-def countOfWordInText(text, word):
+def freqOfWordInText(text, word):
     count = 0
     all_words = re.findall(r'\w+', text)
     for w in all_words:
         if w == word:
             count = count + 1
-    return count
+    return round(count / len(all_words) * 100, 2)
 
 
 def featureVectorOfText(text, words):
-    return [countOfWordInText(text, w) for w in words]
+    return [(freqOfWordInText(text, w), w) for w in words]
+
+
+def printVectorAsWeka(feature_vect):
+    weka_vect = ""
+    for item in feature_vect:
+        weka_vect += str(item[0]) + " \"" + item[1] + "\", "
+    print("[" + weka_vect[:-2] + "]")
 
 
 def printMostFreq():
@@ -65,19 +73,20 @@ def getAllFeatureVectors():
     print('Reading ' + str(len(files)) + 'files...')
     for f in files:
         print('Feature vector for file ' + f + ': ')
-        print(featureVectorOfText(readFile(mypath + f), [w[0] for w in MOST_FREQ]))
+        f_vector = featureVectorOfText(readFile(mypath + f), [w[0] for w in MOST_FREQ])
+        printVectorAsWeka(f_vector)
 
 
 def printMenu():
     print('Welcome PNL - lab 2')
     print('Select what you want to do: ')
-    option = int(input('1. Calculate most N frequent words\n2. Calculate features vector\n'))
-    if option == 1:
+    option = input('1. Calculate most N frequent words\n2. Calculate features vector\nor type "exit" to finish program execution\n')
+    if option == "1":
         global N
         N = int(input('Type the number of frequent word you want to calculate: '))
         calculateMostNFreq()
         printMostFreq()
-    elif option == 2:
+    elif option == "2":
         print('Calculating feature vector with ' + str(N) + ' most frequent words')
         global MOST_FREQ
         if len(MOST_FREQ):
@@ -85,6 +94,8 @@ def printMenu():
         else:
             calculateMostNFreq()
             getAllFeatureVectors()
+    elif option == "exit":
+        sys.exit(0)
     else:
         print('You have selected invalid menu option')
     printMenu()
