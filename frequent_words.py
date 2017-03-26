@@ -40,13 +40,13 @@ def freqOfWordInText(text, word):
     count = 0
     all_words = re.findall(r'\w+', text)
     for w in all_words:
-        if w == word:
+        if w.lower() == word:
             count = count + 1
     return round(count / len(all_words), 4)
 
 
-def featureVectorOfText(text, words):
-    return [(freqOfWordInText(text, w), w) for w in words]
+def featureVectorOfText(text, words, gender):
+    return ([(freqOfWordInText(text, w), w) for w in words], gender)
 
 
 def vectorAsWeka(feature_vect):
@@ -74,17 +74,18 @@ def getAllFeatureVectors():
     print('Reading ' + str(len(files)) + 'files...')
     for f in files:
         print('Feature vector for file ' + f + ': ')
-        f_vector = featureVectorOfText(readFile(mypath + f), [w[0] for w in MOST_FREQ])
+        f_vector = featureVectorOfText(readFile(mypath + f), [w[0] for w in MOST_FREQ], f.split("_")[1])
         F_VECTORS.append(f_vector)
-        print(vectorAsWeka(f_vector))
+        print(vectorAsWeka(f_vector[0]))
 
 
 def saveFeatureVectorsToArrf():
+    print("Ariibba")
     new_path = 'feature_vectors.arff'
     new_file = open(new_path, 'w')
-    text = ""
+    text = "@RELATION p2_pln\n@ATTRIBUTE number REAL\n@ATTRIBUTE gender {female,male}\n"
     for v in F_VECTORS:
-        text += vectorAsWeka(v) + '\n'
+        text += vectorAsWeka(v[0])[1:-1] + ',' + v[1] + '\n'
     new_file.write(text)
     new_file.close()
 
@@ -101,12 +102,10 @@ def printMenu():
     elif option == "2":
         print('Calculating feature vector with ' + str(N) + ' most frequent words')
         global MOST_FREQ
-        if len(MOST_FREQ):
-            getAllFeatureVectors()
-        else:
+        if len(MOST_FREQ) == 0:
             calculateMostNFreq()
-            getAllFeatureVectors()
-            saveFeatureVectorsToArrf()
+        getAllFeatureVectors()
+        saveFeatureVectorsToArrf()
     elif option == "exit":
         sys.exit(0)
     else:
