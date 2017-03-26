@@ -42,7 +42,7 @@ def freqOfWordInText(text, word):
     for w in all_words:
         if w == word:
             count = count + 1
-    return round(count / len(all_words) * 100, 2)
+    return round(count / len(all_words), 4)
 
 
 def featureVectorOfText(text, words):
