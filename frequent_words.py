@@ -80,10 +80,19 @@ def getAllFeatureVectors():
 
 
 def saveFeatureVectorsToArrf():
-    print("Ariibba")
     new_path = 'feature_vectors.arff'
     new_file = open(new_path, 'w')
-    text = "@RELATION p2_pln\n@ATTRIBUTE number REAL\n@ATTRIBUTE gender {female,male}\n"
+    text = "@RELATION p2_pln " + '\n\n\n'
+    num = 0
+    for x in range(N):
+        num += 1
+        text += "@ATTRIBUTE" + "\t" + "number" + str(num) + "\t" + "REAL" +  '\n'
+    
+    text += "@ATTRIBUTE gender {female,male}\n"
+        
+    text += '\n\n'
+    text += "@DATA" + '\n'
+
     for v in F_VECTORS:
         text += vectorAsWeka(v[0])[1:-1] + ',' + v[1] + '\n'
     new_file.write(text)
