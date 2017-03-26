@@ -3,6 +3,7 @@ from os.path import isfile, join
 from collections import Counter
 import re
 import sys
+import os
 
 
 N = 10  # Default number of most frequent words
@@ -81,15 +82,12 @@ def getAllFeatureVectors():
 
 def saveFeatureVectorsToArrf():
     new_path = 'feature_vectors.arff'
+    os.remove(new_path)
     new_file = open(new_path, 'w')
     text = "@RELATION p2_pln " + '\n\n\n'
-    num = 0
     for x in range(N):
-        num += 1
-        text += "@ATTRIBUTE" + "\t" + "number" + str(num) + "\t" + "REAL" +  '\n'
-    
+        text += "@ATTRIBUTE" + "\t" + "number" + str(x + 1) + "\t" + "REAL" + '\n'
     text += "@ATTRIBUTE gender {female,male}\n"
-        
     text += '\n\n'
     text += "@DATA" + '\n'
 
