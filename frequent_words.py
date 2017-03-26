@@ -92,11 +92,14 @@ def getAllFeatureVectors():
 def saveFeatureVectorsToArrf():
     """ It saves the feature vectors in an .arff file """
     new_path = 'feature_vectors.arff'
-    os.remove(new_path)  # We crear content written before 
+    try:
+        os.remove(new_path)  # We clear content written before
+    except:
+        pass
     new_file = open(new_path, 'w')
     text = "@RELATION p2_pln " + '\n\n\n'
     for x in range(N):
-        text += "@ATTRIBUTE" + "\t" + "number" + str(x + 1) + "\t" + "REAL" + '\n' # We need one attribute for each vector feature frequency value
+        text += "@ATTRIBUTE" + "\t" + "number" + str(x + 1) + "\t" + "REAL" + '\n'  # We need one attribute for each vector feature frequency value
     text += "@ATTRIBUTE gender {female,male}\n"
     text += '\n\n'
     text += "@DATA" + '\n'
