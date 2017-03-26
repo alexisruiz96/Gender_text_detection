@@ -59,7 +59,7 @@ def vectorAsWeka(feature_vect):
 
 def printMostFreq():
     for i, w in enumerate(MOST_FREQ):
-        print(str(i) + ': ' + w[0] + '(' + str(w[1]) + ' times)')
+        print(str(i+1) + ': ' + w[0] + '(' + str(w[1]) + ' times)')
 
 
 def calculateMostNFreq():
@@ -74,10 +74,10 @@ def getAllFeatureVectors():
     files = [f for f in listdir(mypath) if isfile(join(mypath, f))]
     print('Reading ' + str(len(files)) + 'files...')
     for f in files:
-        print('Feature vector for file ' + f + ': ')
+        #print('Feature vector for file ' + f + ': ')
         f_vector = featureVectorOfText(readFile(mypath + f), [w[0] for w in MOST_FREQ], f.split("_")[1])
         F_VECTORS.append(f_vector)
-        print(vectorAsWeka(f_vector[0]))
+        #print(vectorAsWeka(f_vector[0]))
 
 
 def saveFeatureVectorsToArrf():
@@ -97,7 +97,7 @@ def saveFeatureVectorsToArrf():
     new_file.close()
 
 
-def printMenu():
+def main():
     print('Welcome PNL - lab 2')
     print('Select what you want to do: ')
     option = input('1. Calculate most N frequent words\n2. Calculate features vector and save it to arrf file\nor type "exit" to finish program execution\n')
@@ -105,19 +105,22 @@ def printMenu():
         global N
         N = int(input('Type the number of frequent word you want to calculate: '))
         calculateMostNFreq()
+        os.system('clear')
         printMostFreq()
     elif option == "2":
+        os.system('clear')
         print('Calculating feature vector with ' + str(N) + ' most frequent words')
         global MOST_FREQ
         if len(MOST_FREQ) == 0:
             calculateMostNFreq()
         getAllFeatureVectors()
         saveFeatureVectorsToArrf()
+        print('Calculated features and arff file created')
     elif option == "exit":
         sys.exit(0)
     else:
         print('You have selected invalid menu option')
-    printMenu()
+    main()
 
 
-printMenu()
+main()
